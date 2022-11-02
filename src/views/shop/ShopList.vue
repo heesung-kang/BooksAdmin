@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="sub-title">출판사 리스트</h2>
+    <h2 class="sub-title">서점 리스트</h2>
     <section class="sub-container">
       <section class="search">
         <input type="text" v-model="keyword" @keypress.enter="search" />
@@ -9,25 +9,21 @@
       <table>
         <thead>
           <tr>
-            <th>sid</th>
-            <th>출판사명</th>
-            <th>대표명</th>
+            <th>서점명</th>
             <th>이메일</th>
-            <th>전화번호</th>
+            <th>주소</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in publishers" :key="index">
-            <td>{{ item.sid }}</td>
-            <td>{{ item.publisher }}</td>
-            <td>{{ item.name }}</td>
+          <tr v-for="(item, index) in shops" :key="index">
+            <td>{{ item.shop }}</td>
             <td>{{ item.email }}</td>
-            <td>{{ item.tel }}</td>
+            <td>{{ item.address1 }} {{ item.address2 }}</td>
           </tr>
         </tbody>
-        <tfoot v-if="publishers.length === 0">
+        <tfoot v-if="shops.length === 0">
           <tr>
-            <td colspan="5">출판사 리스트가 없습니다.</td>
+            <td colspan="3">서점 리스트가 없습니다.</td>
           </tr>
         </tfoot>
       </table>
@@ -43,7 +39,7 @@ export default {
   data() {
     return {
       origin: [],
-      publishers: [],
+      shops: [],
       keyword: "",
     };
   },
@@ -54,11 +50,11 @@ export default {
     async load() {
       try {
         this.$store.commit("common/setLoading", true);
-        const first = query(collection(db, "publisherInfo"), where("publisher", ">=", this.keyword));
+        const first = query(collection(db, "shopInfo"), where("shop", ">=", this.keyword));
         const documentSnapshots = await getDocs(first);
         documentSnapshots.forEach(doc => {
           this.origin.push(doc.data());
-          this.publishers.push(doc.data());
+          this.shops.push(doc.data());
         });
       } catch (e) {
         console.log(e);
@@ -68,13 +64,13 @@ export default {
     search() {
       if (this.keyword !== "") {
         const filter = this.origin.filter(ele => {
-          if (ele.publisher.includes(this.keyword)) {
+          if (ele.shop.includes(this.keyword)) {
             return ele;
           }
         });
-        this.publishers = filter;
+        this.shops = filter;
       } else {
-        this.publishers = this.origin;
+        this.shops = this.origin;
       }
     },
   },

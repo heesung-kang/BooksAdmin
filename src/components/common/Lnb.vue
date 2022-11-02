@@ -6,6 +6,7 @@
       <nav class="lnb">
         <ul @click="close">
           <li :class="{ active: activeStatus === 1 }"><router-link to="/PublisherList">출판사 리스트</router-link></li>
+          <li :class="{ active: activeStatus === 2 }"><router-link to="/ShopList">서점 리스트</router-link></li>
         </ul>
       </nav>
     </aside>
@@ -55,8 +56,8 @@ export default {
         case "PublisherList":
           this.activeStatus = 1;
           break;
-        case "OrderListDetail":
-          this.activeStatus = 1;
+        case "ShopList":
+          this.activeStatus = 2;
           break;
       }
     },
