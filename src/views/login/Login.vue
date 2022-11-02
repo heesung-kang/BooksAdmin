@@ -20,7 +20,7 @@
 
 <script>
 import { saveCookie } from "@/utils/cookie";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/db";
 import { app } from "@/utils/db";
@@ -37,39 +37,46 @@ export default {
     async signIn() {
       try {
         this.$store.commit("common/setLoading", true);
-        await signInWithEmailAndPassword(auth, this.email, this.password)
-          .then(async userCredential => {
-            // Signed in
-            const user = userCredential.user;
-            const userName = user.displayName.split("-");
-            //1:관리자, 2:출판사, 3:서점
-            if (Number(userName[1]) !== 1) {
-              alert("관라지가 아닙니다.");
-            } else {
-              const docSnap = await getDoc(doc(db, "publisherInfo", user.uid));
-              saveCookie("userInfo", { uid: user.uid, name: userName[0], email: user.email, type: Number(userName[1]), info: docSnap.data() });
-              saveCookie("accessToken", user.accessToken);
-              this.$router.push("/");
-            }
+        setPersistence(auth, browserSessionPersistence)
+          .then(() => {
+            return signInWithEmailAndPassword(auth, this.email, this.password)
+              .then(async userCredential => {
+                // Signed in
+                const user = userCredential.user;
+                const userName = user.displayName.split("-");
+                //1:관리자, 2:출판사, 3:서점
+                if (Number(userName[1]) !== 1) {
+                  alert("관라지가 아닙니다.");
+                } else {
+                  const docSnap = await getDoc(doc(db, "publisherInfo", user.uid));
+                  saveCookie("userInfo", { uid: user.uid, name: userName[0], email: user.email, type: Number(userName[1]), info: docSnap.data() });
+
+                  this.$router.push("/");
+                }
+              })
+              .catch(error => {
+                switch (error.code) {
+                  case "auth/invalid-email":
+                    this.logMessage = "이메일을 잘못 입력 하셨습니다.";
+                    break;
+                  case "auth/user-not-found":
+                    this.logMessage = "존재하지 않는 이메일 주소입니다.";
+                    break;
+                  case "auth/wrong-password":
+                    this.logMessage = "비밀번호를 잘못 입력 하셨습니다.";
+                    break;
+                  case "auth/too-many-requests":
+                    this.logMessage = "접속 시도를 너무 많이 하셨습니다.";
+                    break;
+                  default:
+                    this.logMessage = "이메일 혹은 비밀번호가 틀렸습니다.";
+                    break;
+                }
+              });
           })
           .catch(error => {
-            switch (error.code) {
-              case "auth/invalid-email":
-                this.logMessage = "이메일을 잘못 입력 하셨습니다.";
-                break;
-              case "auth/user-not-found":
-                this.logMessage = "존재하지 않는 이메일 주소입니다.";
-                break;
-              case "auth/wrong-password":
-                this.logMessage = "비밀번호를 잘못 입력 하셨습니다.";
-                break;
-              case "auth/too-many-requests":
-                this.logMessage = "접속 시도를 너무 많이 하셨습니다.";
-                break;
-              default:
-                this.logMessage = "이메일 혹은 비밀번호가 틀렸습니다.";
-                break;
-            }
+            // Handle Errors here.
+            console.log(error);
           });
       } catch (e) {
         console.log(e);

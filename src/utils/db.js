@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-
+const key = process.env.VUE_APP_FIREBASE_APP_KEY;
 const firebaseConfig = {
-  apiKey: "AIzaSyAV42lLrHm5vIhcTup9TwFL2unx0icOmuk",
+  apiKey: key,
   authDomain: "bookstore-18b09.firebaseapp.com",
   projectId: "bookstore-18b09",
   storageBucket: "bookstore-18b09.appspot.com",
