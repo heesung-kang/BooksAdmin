@@ -39,6 +39,7 @@ export default {
               displayName: "admin-1", //1:권한
             })
               .then(() => {
+                this.$store.commit("common/setLoading", false);
                 alert("정상 가입 되셨습니다.");
                 this.$router.push("/Login");
               })
@@ -51,8 +52,8 @@ export default {
           });
       } catch (e) {
         console.log(e);
+        this.$store.commit("common/setLoading", false);
       }
-      this.$store.commit("common/setLoading", false);
     },
   },
 };

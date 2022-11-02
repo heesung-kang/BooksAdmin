@@ -50,7 +50,7 @@ export default {
                 } else {
                   const docSnap = await getDoc(doc(db, "publisherInfo", user.uid));
                   saveCookie("userInfo", { uid: user.uid, name: userName[0], email: user.email, type: Number(userName[1]), info: docSnap.data() });
-
+                  this.$store.commit("common/setLoading", false);
                   this.$router.push("/");
                 }
               })
@@ -77,11 +77,12 @@ export default {
           .catch(error => {
             // Handle Errors here.
             console.log(error);
+            this.$store.commit("common/setLoading", false);
           });
       } catch (e) {
         console.log(e);
+        this.$store.commit("common/setLoading", false);
       }
-      this.$store.commit("common/setLoading", false);
     },
   },
 };
