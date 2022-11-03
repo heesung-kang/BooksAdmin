@@ -129,4 +129,13 @@ export default {
   z-index: 1;
   cursor: pointer;
 }
+@include lnb {
+  .sign-out {
+    i {
+      &:before {
+        color: #fff !important;
+      }
+    }
+  }
+}
 </style>
