@@ -4,6 +4,7 @@ const lnb = () => import("@/components/common/Lnb.vue");
 const footer = () => import("@/components/common/Footer.vue");
 
 Vue.use(VueRouter);
+const key = process.env.VUE_APP_FIREBASE_APP_KEY;
 const router = new VueRouter({
   //mode: "history",
   scrollBehavior() {
