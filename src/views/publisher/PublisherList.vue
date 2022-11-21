@@ -14,6 +14,7 @@
             <th>대표명</th>
             <th>이메일</th>
             <th>전화번호</th>
+            <th>기본공급률</th>
           </tr>
         </thead>
         <tbody>
@@ -23,11 +24,12 @@
             <td>{{ item.name }}</td>
             <td>{{ item.email }}</td>
             <td>{{ item.tel }}</td>
+            <td>{{ item.supplyRate }}</td>
           </tr>
         </tbody>
         <tfoot v-if="publishers.length === 0">
           <tr>
-            <td colspan="5">출판사 리스트가 없습니다.</td>
+            <td colspan="6">출판사 리스트가 없습니다.</td>
           </tr>
         </tfoot>
       </table>
